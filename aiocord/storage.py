@@ -10,157 +10,117 @@ missing = type('missing', (), {'__slots__': (), '__bool__': lambda s: False})()
 
 
 class Structure:
-
     __slots__ = ('__dict__',)
-
+    
     def __init__(self, *args, **extra):
-
         try:
-
             (data,) = args
-
         except ValueError:
-
             pass
-
         else:
-
             extra.update(data)
-
+        
         update_structure(self, extra)
 
+
     def __getattr__(self, name, forbidden = '__'):
-
         if name.startswith(forbidden):
-
             raise AttributeError(name)
 
         blueprint = _blueprint(self.__class__)
-
         available = blueprint.keys()
 
         if name in available:
-
             return missing
 
         raise AttributeError(name)
 
+
     def __eq__(self, other):
-
         family = isinstance(other, self.__class__)
-
         return family and self.__dict__ == other.__dict__
 
-    def __ne__(self, other):
 
+    def __ne__(self, other):
         return not self.__eq__(other)
 
-    def __hash__(self):
 
+    def __hash__(self):
         return super().__hash__()
 
-    def __repr__(self):
 
+    def __repr__(self):
         return f'<{self.__class__.__name__}>'
 
 
 @functools.lru_cache(maxsize = None)
 def _structure(name):
-
     bases = (Structure,)
-
     namespace = {}
-
     value = type(name, bases, namespace)
-
     return value
 
 
 @functools.lru_cache(maxsize = None)
 def _blueprint(structure):
-
     return _blueprints[structure.__name__]
 
 
 @functools.lru_cache(maxsize = None)
 def _structure_update():
-
     skip = (missing,)
-
+    
     def wrapper(value, data):
-
         blueprint = _blueprint(value.__class__)
-
         return helpers.update_generic(blueprint, value, data, skip = skip)
-
+    
     return wrapper
 
 
 def update_structure(value, data):
-
     return _structure_update()(value, data)
 
 
 def _noop_update(value, data):
-
     return
 
 
 def _pick_update(value):
-
     if isinstance(value, type) and issubclass(value, Structure):
-
         return _structure_update()
-
     return _noop_update
 
 
 @functools.lru_cache(maxsize = None)
 def _list_update(build):
-
     update = _pick_update(build)
-
     return helpers.cached_partial(helpers.update_list, update, build)
 
 
 def update_list(build, *args, **kwargs):
-
     return _list_update(build)(*args, **kwargs)
 
 
 @functools.lru_cache(maxsize = None)
 def _dict_update(build, keys):
-
     update = _pick_update(build)
-
     identify = helpers.cached_partial(helpers.crawl, keys)
-
     return helpers.cached_partial(helpers.update_dict, update, build, identify)
 
 
 def update_dict(build, keys, *args, **kwargs):
-
     return _dict_update(build, keys)(*args, **kwargs)
 
 
 @functools.lru_cache(maxsize = None)
 def _field(create, update):
-
     return (create, update)
 
 
 _string = str
-
-
 _integer = int
-
-
 _boolean = bool
-
-
 _list = list
-
-
 _dict = dict
 
 
@@ -170,70 +130,87 @@ _blueprints = {
             _string,
             None
         ),
+        
         'type': _field(
             _integer,
             None
         ),
+        
         'guild_id': _field(
             _string,
             None
         ),
+        
         'position': _field(
             _integer,
             None
         ),
+        
         'permission_overwrites': _field(
             _dict,
             _dict_update(_structure('Overwrite'), ('id',))
         ),
+        
         'name': _field(
             _string,
             None
         ),
+        
         'topic': _field(
             _string,
             None
         ),
+        
         'nsfw': _field(
             _boolean,
             None
         ),
+        
         'last_message_id': _field(
             _string,
             None
         ),
+        
         'bitrate': _field(
             _integer,
             None
         ),
+        
         'user_limit': _field(
             _integer,
             None
         ),
+        
         'rate_limit_per_user': _field(
             _integer,
             None
         ),
+        
         'recipients': _field(
             _dict,
             _dict_update(_structure('User'), ('id',))
         ),
+        
         'icon': _field(
             _string,
             None
         ),
+        
         'owner_id': _field(
             _string,
             None
         ),
+        
         'application_id': _field(
             _string,
             None
         ),
+        
         'parent_id': _field(
             _string,
             None
         ),
+        
         'last_pin_timestamp': _field(
             _string,
             None
@@ -244,78 +221,97 @@ _blueprints = {
             _string,
             None
         ),
+        
         'channel_id': _field(
             _string,
             None
         ),
+        
         'guild_id': _field(
             _string,
             None
         ),
+        
         'author': _field(
             _structure('User'),
             _structure_update(),
         ),
+        
         'content': _field(
             _string,
             None
         ),
+        
         'timestamp': _field(
             _string,
             None
         ),
+        
         'edited_timestamp': _field(
             _string,
             None
         ),
+        
         'tts': _field(
             _boolean,
             None
         ),
+        
         'mention_everyone': _field(
             _boolean,
             None
         ),
+        
         'mentions': _field(
             _list,
             _list_update(_structure('User'))
         ),
+        
         'mention_roles': _field(
             _list,
             _list_update(_string)
         ),
+        
         'attachments': _field(
             _list,
             _list_update(_structure('Attachment'))
         ),
+        
         'embeds': _field(
             _list,
             _list_update(_structure('Embed'))
         ),
+        
         'reactions': _field(
             _list,
             _list_update(_structure('Reaction'))
         ),
+        
         'nonce': _field(
             _integer,
             None
         ),
+        
         'pinned': _field(
             _boolean,
             None
         ),
+        
         'webhook_id': _field(
             _string,
             None
         ),
+        
         'type': _field(
             _integer,
             None
         ),
+        
         'activity': _field(
             _structure('MessageActivity'),
             _structure_update()
         ),
+        
         'application': _field(
             _structure('MessageApplication'),
             _structure_update()
@@ -326,6 +322,7 @@ _blueprints = {
             _integer,
             None
         ),
+        
         'party_id': _field(
             _string,
             None
@@ -336,18 +333,22 @@ _blueprints = {
             _string,
             None
         ),
+        
         'cover_image': _field(
             _string,
             None
         ),
+        
         'description': _field(
             _string,
             None
         ),
+        
         'icon': _field(
             _string,
             None
         ),
+        
         'name': _field(
             _string,
             None
@@ -358,10 +359,12 @@ _blueprints = {
             _integer,
             None
         ),
+        
         'me': _field(
             _boolean,
             None
         ),
+        
         'emoji': _field(
             _structure('Emoji'),
             _structure_update()
@@ -372,14 +375,17 @@ _blueprints = {
             _string,
             None
         ),
+        
         'type': _field(
             _string,
             None
         ),
+        
         'allow': _field(
             _string,
             None
         ),
+        
         'deny': _field(
             _string,
             None
@@ -390,54 +396,66 @@ _blueprints = {
             _string,
             None
         ),
+        
         'type': _field(
             _string,
             None
         ),
+        
         'description': _field(
             _string,
             None
         ),
+        
         'url': _field(
             _string,
             None
         ),
+        
         'timestamp': _field(
             _string,
             None
         ),
+        
         'color': _field(
             _integer,
             None
         ),
+        
         'footer': _field(
             _structure('EmbedFooter'),
             _structure_update()
         ),
+        
         'image': _field(
             _structure('EmbedImage'),
             _structure_update()
         ),
+        
         'thumbnail': _field(
             _structure('EmbedThumbnail'),
             _structure_update()
         ),
+        
         'video': _field(
             _structure('EmbedVideo'),
             _structure_update()
         ),
+        
         'provider': _field(
             _structure('EmbedProvider'),
             _structure_update()
         ),
+        
         'author': _field(
             _structure('EmbedAuthor'),
             _structure_update()
         ),
+        
         'fields': _field(
             _list,
             _list_update(_structure('EmbedField'))
-        )
+        ) # gave up at here
     },
     'EmbedThumbnail': {
         'url': _field(
@@ -1266,11 +1284,8 @@ _blueprints = {
 
 @functools.lru_cache(maxsize = None)
 def __getattr__(name):
-
     available = _blueprints.keys()
-
     if not name in available:
-
         raise AttributeError(name)
 
     return _structure(name)

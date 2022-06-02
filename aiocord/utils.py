@@ -6,7 +6,7 @@ import re
 from . import helpers
 
 __all__ = ('Permissions', 'avatar_from_bytes', 'datetime_from_iso8601',
-           'datetime_from_snowflake', 'datetime_from_unix', 'shard_id',
+           'datetime_from_snowflake', 'shard_id',
            'avatar_id')
 
 
@@ -50,84 +50,65 @@ class PermissionsMeta(type):
     }
 
     def none(self):
-
         return self(0)
 
-    def some(self, values):
 
+    def some(self, values):
         return functools.reduce(self.add, values, self.none())
 
-    def full(self):
 
+    def full(self):
         return self.some(self.indexes.values())
 
+
     def in_guild(self, guild, member):
-
         if guild.owner_id == member.user.id:
-
             return self.full()
-
         roles = (guild.roles[role_id] for role_id in member.roles)
-
         values = (role.permissions for role in roles)
-
         default = guild.roles[guild.id]
-
         return self.some(values).add(default.permissions)
+
 
     @functools.lru_cache(maxsize = None)
     def __getattr__(self, key):
-
         try:
-
             index = self.indexes[key]
-
         except KeyError:
-
             raise AttributeError(key) from None
-
         return self(index)
 
 
 class Permissions(helpers.BitGroup, metaclass = PermissionsMeta):
-
     __slots__ = ()
 
-    indexes = PermissionsMeta.indexes
 
+    indexes = PermissionsMeta.indexes
     bypass = indexes['administrator']
 
-    def can(self, index):
 
-        return index == bypass or super().can(index)
+    def can(self, index):
+        return index == Permissions.bypass or super().can(index)
+
 
     def __add__(self, other):
-
         return self.__class__(self.add(other))
 
-    def __sub__(self, other):
 
+    def __sub__(self, other):
         return self.__class__(self.pop(other))
 
     def __getattr__(self, key):
-
         try:
-
             index = self.indexes[key]
-
         except KeyError:
-
             raise AttributeError(key) from None
-
         return super().can(index)
 
 
 def avatar_from_bytes(value):
-
     mime = helpers.mime_from_bytes(value)
-
     data = base64.b64encode(value).decode('ascii')
-
     return f'data:{mime};base64,{data}'
 
 
@@ -135,46 +116,35 @@ timezone = datetime.timezone.utc
 
 
 def datetime_from_iso8601(timestamp, cleaner = re.compile(r'[^\d]')):
-
     naive = timestamp.replace('+00:00', '')
-
     cleans = cleaner.split(naive)
-
     values = map(int, cleans)
-
     return datetime.datetime(*values, tzinfo = timezone)
 
 
 def unix_from_snowflake(snowflake, epoch = 1420070400000):
-
     return (int(snowflake) >> 22) + epoch
 
 
 def timestamp_from_unix(unix):
-
     return unix / 1000
 
 
 def timestamp_from_snowflake(snowflake):
-
     return timestamp_from_unix(unix_from_snowflake(snowflake))
 
 
 def datetime_from_timestamp(timestamp):
-
     return datetime.datetime.fromtimestamp(timestamp, timezone)
 
 
 def datetime_from_snowflake(snowflake):
-
     return datetime_from_timestamp(timestamp_from_snowflake(snowflake))
 
 
 def shard_id(guild_id, shard_count):
-
     return (int(guild_id) >> 22) % shard_count
 
 
 def avatar_id(discriminator):
-
     return discriminator % 5
