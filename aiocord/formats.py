@@ -1,7 +1,6 @@
 import functools
 import itertools
 
-
 __all__ = ('user', 'channel', 'role', 'emoji')
 
 

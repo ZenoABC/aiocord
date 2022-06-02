@@ -1,6 +1,5 @@
 import json
 
-
 __all__ = ('Error', 'RequestError', 'BadRequest', 'Unauthorized',
            'Forbidden', 'NotFound', 'MethodNotAllowed', 'TooManyRequests',
            'GatewayUnavailable')

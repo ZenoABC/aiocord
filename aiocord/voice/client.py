@@ -1,10 +1,11 @@
 import asyncio
-import aiohttp
-import yarl
 import enum
 import json
 import socket
 import struct
+
+import aiohttp
+import yarl
 
 try:
 
@@ -14,9 +15,7 @@ except ImportError:
 
     secret = None
 
-from . import vital
-from . import audio
-
+from . import audio, vital
 
 __all__ = ('Client',)
 

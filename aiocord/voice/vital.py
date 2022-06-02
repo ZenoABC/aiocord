@@ -1,6 +1,5 @@
 import asyncio
 
-
 __all__ = ('Vital',)
 
 

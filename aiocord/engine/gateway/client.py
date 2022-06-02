@@ -1,10 +1,10 @@
 import asyncio
-import aiocord
 import collections
 import functools
 
-from . import helpers
+import aiocord
 
+from . import helpers
 
 __all__ = ('Client',)
 

@@ -1,15 +1,14 @@
 import asyncio
+import enum
+import json
+import os
+import random
+import zlib
+
 import aiohttp
 import yarl
-import enum
-import zlib
-import json
-import random
-import os
 
-from . import errors
-from . import vital
-
+from . import errors, vital
 
 __all__ = ('Client',)
 

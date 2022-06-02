@@ -1,10 +1,9 @@
-import functools
 import base64
 import datetime
+import functools
 import re
 
 from . import helpers
-
 
 __all__ = ('Permissions', 'avatar_from_bytes', 'datetime_from_iso8601',
            'datetime_from_snowflake', 'datetime_from_unix', 'shard_id',

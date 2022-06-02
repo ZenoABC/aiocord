@@ -1,13 +1,10 @@
 import asyncio
-import aiocord
-import itertools
 import functools
+import itertools
 
-from . import rest
-from . import gateway
-from . import voice
-from . import helpers
+import aiocord
 
+from . import gateway, helpers, rest, voice
 
 __all__ = ('Client',)
 

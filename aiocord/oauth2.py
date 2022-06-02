@@ -1,6 +1,6 @@
-import yarl
 import asyncio
 
+import yarl
 
 __all__ = ('get_access_token', 'refresh_access_token', 'AuthHandle')
 

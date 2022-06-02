@@ -1,11 +1,10 @@
-import os
-import sys
 import array
 import ctypes
 import ctypes.util
+import os
+import sys
 
 from . import errors
-
 
 __all__ = ('Encoder',)
 
