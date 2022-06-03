@@ -4,7 +4,6 @@ __all__ = ()
 
 
 def events_from_client(value):
-
     events = {
         'READY': value.ready,
         'RESUMED': value.resumed,
