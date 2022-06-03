@@ -4,7 +4,6 @@ __all__ = ('Error', 'InvalidSession')
 
 
 class Error(Exception):
-
     """
     Raised when something flops.
     """
@@ -13,7 +12,6 @@ class Error(Exception):
 
 
 class InvalidSession(Error):
-
     """
     Raised when reconnecting is not possible.
     """

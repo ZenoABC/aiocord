@@ -6,16 +6,14 @@ __all__ = ('Error', 'RequestError', 'BadRequest', 'Unauthorized',
 
 
 class Error(Exception):
-
     """
     Raised when something flops.
     """
-
+    
     __slots__ = ()
 
 
 class RequestError(Error):
-
     """
     Raised when a request fails.
     """
@@ -23,18 +21,13 @@ class RequestError(Error):
     __slots__ = ('response', 'data')
 
     def __init__(self, response, data):
-
         message = json.dumps(data, indent = 4)
-
         super().__init__(message)
-
         self.response = response
-
         self.data = data
 
 
 class BadRequest(RequestError):
-
     """
     Rquest was improperly formatted, or the server couldn't understand it.
     """
@@ -43,7 +36,6 @@ class BadRequest(RequestError):
 
 
 class Unauthorized(RequestError):
-
     """
     The Authorization header was missing or invalid.
     """
@@ -52,7 +44,6 @@ class Unauthorized(RequestError):
 
 
 class Forbidden(RequestError):
-
     """
     The Authorization token you passed did not have permission to the resource.
     """
@@ -61,7 +52,6 @@ class Forbidden(RequestError):
 
 
 class NotFound(RequestError):
-
     """
     The resource at the location specified doesn't exist.
     """
@@ -70,7 +60,6 @@ class NotFound(RequestError):
 
 
 class MethodNotAllowed(RequestError):
-
     """
     The HTTP method used is not valid for the location specified.
     """
@@ -79,7 +68,6 @@ class MethodNotAllowed(RequestError):
 
 
 class TooManyRequests(RequestError):
-
     """
     You've made too many requests.
     """
@@ -88,7 +76,6 @@ class TooManyRequests(RequestError):
 
 
 class GatewayUnavailable(RequestError):
-
     """
     There was not a gateway available to process your request.
     """
@@ -97,7 +84,6 @@ class GatewayUnavailable(RequestError):
 
 
 class InterruptedRequestError(Error):
-
     """
     Session was closed during the handling of a request.
     """
